@@ -2,6 +2,7 @@ from app import app
 from app import prenoms
 
 from flask import request
+from flask import json
 
 @app.route('/')
 @app.route('/index')
@@ -16,5 +17,10 @@ def index():
 
     print("--> Scoring {}".format('Arnaud'))
     p = prenoms.score(d, prenom, sexe, depuis).to_json(orient='table')
-
-    return p
+		
+    response = app.response_class(
+        response=json.dumps(p),
+        status=200,
+        mimetype='application/json'
+    )
+    return response
