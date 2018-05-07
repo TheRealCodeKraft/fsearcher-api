@@ -1,11 +1,11 @@
-#import argparse
+# coding: utf8
 
 import numpy as np
 
 import pandas as pd
 
 def read_prenom_file(src_path):
-    df = pd.read_csv(src_path, sep='\t', encoding='iso-8859-1',
+    df = pd.read_csv(src_path, sep='\t', encoding='UTF8',
                      dtype={'sexe': str})
 
     c = df['annais'].str.contains('X')
