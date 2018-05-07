@@ -33,6 +33,8 @@ RUN pip install python-editor==1.0.3
 RUN pip install six==1.10.0
 RUN pip install SQLAlchemy==1.1.13
 RUN pip install Werkzeug==0.12.2
+RUN pip install numpy
+RUN pip install pandas
 RUN pip install gunicorn
 
 EXPOSE 8000
