@@ -4,12 +4,13 @@ from app import prenoms
 from flask import request
 from flask import json
 
+d = prenoms.read_prenom_file('assets/dpt2016.txt')
+
 @app.route('/')
 @app.route('/index')
 def index():
 
     print("--> Reading first names file from 1900 to 2015 (takes time).")
-    d = prenoms.read_prenom_file('assets/dpt2016.txt')
     
     prenom = request.args.get('firstname')
     depuis = 1900
