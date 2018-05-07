@@ -31,7 +31,7 @@ def index():
         )
     else:
         response = app.response_class(
-            response="{error: '" + repr(error) + "'}",
+            response=json.dumps(json.loads('{"error": "' + repr(error) + '"}')),
             status=500,
             mimetype='application/json'
         )
