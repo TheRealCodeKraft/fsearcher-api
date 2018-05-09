@@ -14,7 +14,7 @@ print("--> Done!")
 def index():
     
     prenom = request.args.get('firstname')
-    depuis = 1900
+    depuis = 1970
     sexe = request.args.get('sex')
 
     print("--> Scoring {}".format(prenom))
