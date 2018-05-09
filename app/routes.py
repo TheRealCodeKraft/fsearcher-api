@@ -17,7 +17,7 @@ def index():
     depuis = 1900
     sexe = request.args.get('sex')
 
-    print("--> Scoring {}".format('Arnaud'))
+    print("--> Scoring {}".format(prenom))
     error = None
     try:
         p = prenoms.score(d, prenom, sexe, depuis).to_json(orient='table')
@@ -37,4 +37,3 @@ def index():
             mimetype='application/json'
         )
     return response
-
