@@ -69,7 +69,7 @@ def score(df, prenom, sexe=None, depuis=None):
             c |= (dft['preusuel'] == prenom.upper())
 
         elif sexe == 'F':
-            c = (dft['sexe'] == '1')
+            c = (dft['sexe'] == '2')
             c |= (dft['preusuel'] == prenom.upper())
         else:
             msg = ("Sex parameter should be 1, 2 or None.")
@@ -90,7 +90,7 @@ def score(df, prenom, sexe=None, depuis=None):
 def nombre_par_an(df, prenom):
     """Nombre de naissances ayant ce prénom chaque année."""
     c = (df['preusuel'] == prenom.upper())
-    
+
     if c.sum() == 0:
         msg = ("Prénom inconnu : {}".format(prenom.capitalize()))
         raise ValueError(msg)
