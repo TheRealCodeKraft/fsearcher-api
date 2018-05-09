@@ -86,3 +86,16 @@ def score(df, prenom, sexe=None, depuis=None):
     sc *= score_popularite(dft, prenom, sexe, depuis)
 
     return sc.sort_values(ascending=False).head(20)
+
+def nombre_par_an(df, prenom):
+    """Nombre de naissances ayant ce prénom chaque année."""
+    c = (df['preusuel'] == prenom.upper())
+    
+    if c.sum() == 0:
+        msg = ("Prénom inconnu : {}".format(prenom.capitalize()))
+        raise ValueError(msg)
+
+    dft = df.sum()
+
+    return dft.pivot_table(values='nombre', aggfunc='sum', index='annais',
+                           columns='sexe')
