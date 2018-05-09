@@ -16,15 +16,10 @@ def read_prenom_file(src_path):
 
     return df
 
-def score_temporel(df, prenom, sexe, depuis=None):
+def score_temporel(df, prenom, sexe=None, depuis=None):
     """Distance entre les profils temporels des prénoms"""
-    sexe = '1' if sexe == 'M' else '2'
-    c = (df['sexe'] == sexe)
-    if depuis is not None:
-        c &= (df['annais'] >= depuis)
-
-    dft = df.loc[c] \
-            .drop(['sexe', 'dpt'], axis='columns') \
+    
+    dft = df.drop(['sexe', 'dpt'], axis='columns') \
             .pivot_table(values='nombre', aggfunc='sum', columns='preusuel',
                          index='annais') \
             .fillna(0.)
@@ -35,15 +30,10 @@ def score_temporel(df, prenom, sexe, depuis=None):
     
     return (1 - np.sqrt(np.square(dft).sum(axis='rows') / dft.shape[0])).sort_values()
 
-def score_geo(df, prenom, sexe, depuis=None):
+def score_geo(df, prenom, sexe=None, depuis=None):
     """Distance entre les profils géographiques des prénoms"""
-    sexe = '1' if sexe == 'M' else '2'
-    c = (df['sexe'] == sexe)
-    if depuis is not None:
-        c &= (df['annais'] >= depuis)
-
-    dft = df.loc[c] \
-            .drop(['sexe', 'annais'], axis='columns') \
+    
+    dft = df.drop(['sexe', 'annais'], axis='columns') \
             .pivot_table(values='nombre', aggfunc='sum', columns='preusuel',
                          index='dpt') \
             .fillna(0.)
@@ -60,22 +50,39 @@ def score_geo(df, prenom, sexe, depuis=None):
     # Prendre la norme
     return (1 - np.sqrt(np.square(dft).sum(axis='rows') / dft.shape[0])).sort_values()
 
-def score_popularite(df, prenom, sexe, depuis=None):
+def score_popularite(df, prenom, sexe=None, depuis=None):
     """Distance entre les nombres de prénoms donnés"""
-    sexe = '1' if sexe == 'M' else '2'
-    c = (df['sexe'] == sexe)
-    if depuis is not None:
-        c &= (df['annais'] >= depuis)
-
-    dft = df.loc[c].groupby('preusuel')['nombre'].sum()
+    
+    dft = df.groupby('preusuel')['nombre'].sum()
     
     dft = dft / dft[prenom.upper()]
     
     return np.exp2(-np.abs(np.log2(dft))).sort_values()
 
-def score(df, prenom, sexe, depuis=None):
-    sc = score_geo(df, prenom, sexe, depuis)
-    sc *= score_temporel(df, prenom, sexe, depuis)
-    sc *= score_popularite(df, prenom, sexe, depuis)
+def score(df, prenom, sexe=None, depuis=None):
+
+    dft = df
+
+    if sexe is not None:
+        if sexe == 'M':
+            c = (dft['sexe'] == '1')
+            c |= (dft['preusuel'] == prenom.upper())
+
+        elif sexe == 'F':
+            c = (dft['sexe'] == '1')
+            c |= (dft['preusuel'] == prenom.upper())
+        else:
+            msg = ("Sex parameter should be 1, 2 or None.")
+            raise ValueError(msg)
+        
+        dft = dft.loc[c]
+
+    if depuis is not None:
+        c = (dft['annais'] >= depuis)
+        dft = dft.loc[c]
+
+    sc = score_geo(dft, prenom, sexe, depuis)
+    sc *= score_temporel(dft, prenom, sexe, depuis)
+    sc *= score_popularite(dft, prenom, sexe, depuis)
 
     return sc.sort_values(ascending=False).head(20)
