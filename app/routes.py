@@ -5,6 +5,7 @@ from app import prenoms
 from flask import request
 from flask import json
 
+
 print("--> Reading first names file from 1900 to 2015 (takes time).")
 d = prenoms.read_prenom_file('assets/dpt2016.txt')
 print("--> Done!")
