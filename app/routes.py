@@ -21,7 +21,8 @@ def index():
     print("--> Scoring {}".format(prenom))
     error = None
     try:
-        p = prenoms.score(d, prenom, sexe, depuis).to_json(orient='table')
+        p = prenoms.score_filter(d, prenom, sexe, depuis) \
+                   .to_json(orient='table')
     except Exception as inst:
         error = inst
 		
