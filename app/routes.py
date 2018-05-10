@@ -39,31 +39,3 @@ def index():
             mimetype='application/json'
         )
     return response
-
-@app.route('/')
-@app.route('/histo')
-def histo():
-
-    prenom = request.args.get('firstname')
-
-    print("--> Returning {} history".format(prenom))
-    error = None
-    try:
-        p = prenoms.nombre_par_an(d, prenom) \
-                   .to_json(orient='table')
-    except Exception as inst:
-        error = inst
-        
-    if error == None:
-        response = app.response_class(
-            response=json.dumps(p, ensure_ascii=False),
-            status=200,
-            mimetype='application/json'
-        )
-    else:
-        response = app.response_class(
-            response=json.dumps(json.loads('{"error": "' + repr(error) + '"}')),
-            status=500,
-            mimetype='application/json'
-        )
-    return response
