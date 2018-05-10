@@ -1,4 +1,5 @@
 # coding: utf8
+from functools import lru_cache
 
 import numpy as np
 
@@ -87,6 +88,7 @@ def score(df, prenom, sexe=None, depuis=None):
 
     return sc.sort_values(ascending=False)
 
+@lru_cache(maxsize=128)
 def score_filter(df, prenom, sexe=None, depuis=None, exclude=None,
                  startswith=None, endswith=None, not_startswith=None,
                  not_endswith=None, contains=None, not_contains=None,
@@ -276,6 +278,7 @@ def score_filter(df, prenom, sexe=None, depuis=None, exclude=None,
     # Return first 20 of them
     return sc.head(20)
 
+@lru_cache(maxsize=128)
 def nombre_par_an(df, prenom):
     """Nombre de naissances ayant ce prénom chaque année."""
     c = (df['preusuel'] == prenom.upper())
