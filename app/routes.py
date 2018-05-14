@@ -5,6 +5,7 @@ from app import prenoms
 from flask import request
 from flask import json
 
+import json
 
 print("--> Reading first names file from 1900 to 2015 (takes time).")
 d = prenoms.read_prenom_file('assets/dpt2016.txt')
@@ -17,11 +18,12 @@ def index():
     prenom = request.args.get('firstname')
     depuis = 1900
     sexe = request.args.get('sex')
+    excludes = json.loads(request.args.get('excludes'))
 
     print("--> Scoring {}".format(prenom))
     error = None
     try:
-        p = prenoms.score_filter(d, prenom, sexe, depuis) \
+        p = prenoms.score_filter(d, prenom, sexe, depuis, excludes) \
                    .to_json(orient='table')
     except Exception as inst:
         error = inst
