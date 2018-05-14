@@ -41,3 +41,21 @@ def index():
             mimetype='application/json'
         )
     return response
+
+@app.route('/favs')
+def favs():
+    print('Adding favs for [' + request.args.get('uuid') + '] : ' + request.args.get('favs'))
+    return app.response_class(
+				response=json.dumps(json.loads('{"success": true}')),
+				status=200,
+				mimetype='application/json'
+		)
+
+@app.route('/excludes')
+def excludes():
+    print('Adding excludes for [' + request.args.get('uuid') + '] : ' + request.args.get('excludes'))
+    return app.response_class(
+				response=json.dumps(json.loads('{"success": true}')),
+				status=200,
+				mimetype='application/json'
+		)
