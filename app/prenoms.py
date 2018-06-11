@@ -6,14 +6,32 @@ import numpy as np
 import pandas as pd
 
 def read_prenom_file(src_path):
+    '''
+    Reading file
+    '''
     df = pd.read_csv(src_path, sep='\t', encoding='UTF8',
                      dtype={'sexe': str})
 
+    '''
+    Movling particular lines out
+    '''
     c = df['annais'].str.contains('X')
     c |= df['dpt'].str.contains('X')
     c |= (df['preusuel'] == '_PRENOMS_RARES')
     df = df.loc[~c]
     df['annais'] = df['annais'].astype(int)
+
+    '''
+    Removing rare names
+    '''
+    dft = df.groupby(['preusuel', 'sexe'])['nombre'].sum().reset_index()
+
+    dft.loc[:, 'idx'] = dft['preusuel'] + dft['sexe']
+    rares = dft.loc[dft['nombre'] < 20]['idx']
+
+    df.loc[:, 'idx'] = df['preusuel'] + df['sexe']
+    df = df.loc[~df['idx'].isin(rares)]
+    del df['idx']
 
     return df
 
@@ -73,7 +91,7 @@ def score(df, prenom, sexe=None, depuis=None):
             c = (dft['sexe'] == '2')
             c |= (dft['preusuel'] == prenom.upper())
         else:
-            msg = ("Sex parameter should be 1, 2 or None.")
+            msg = ("Sex parameter should be 'M', 'F' or None.")
             raise ValueError(msg)
         
         dft = dft.loc[c]
