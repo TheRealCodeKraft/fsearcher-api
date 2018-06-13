@@ -26,3 +26,4 @@ Werkzeug==0.12.2
 numpy
 pandas
 gunicorn
+sqlalchemy

@@ -5,6 +5,8 @@ import numpy as np
 
 import pandas as pd
 
+from sqlalchemy import and_, create_engine, desc, MetaData, select, Table
+
 def read_prenom_file(src_path):
     '''
     Reading file
@@ -107,7 +109,7 @@ def score(df, prenom, sexe=None, depuis=None):
     return sc.sort_values(ascending=False)
 
 # @lru_cache(maxsize=128)
-def score_filter(df, prenom, sexe=None, depuis=None, exclude=None,
+def score_filter(prenom, df, sexe=None, depuis=None, exclude=None,
                  startswith=None, endswith=None, not_startswith=None,
                  not_endswith=None, contains=None, not_contains=None,
                  min_length=None, max_length=None, composed=None):
@@ -133,7 +135,32 @@ def score_filter(df, prenom, sexe=None, depuis=None, exclude=None,
     A pandas Series of names and scores.
     """
     # Apply score function
-    sc = score(df, prenom, sexe, depuis)
+    if df is None:
+        print('1')
+        engine = create_engine('sqlite:///assets/data.sqlite')
+        connection = engine.connect()
+        metadata = MetaData()
+
+        scores = Table('scores', metadata, autoload=True, autoload_with=engine)
+
+        stmt = select([scores.c.preusuel2, scores.c.score])
+
+        stmt = stmt.where(
+            and_(
+                scores.c.preusuel == prenom.upper(),
+                scores.c.sex == sexe
+            )
+        )
+
+        stmt = stmt.order_by(desc(scores.c.score))
+
+        sc = pd.read_sql_query(stmt, connection) \
+               .rename(columns={
+                   'preusuel2': 'preusuel',
+                   'score': 'values'}) \
+               .set_index('preusuel')['values']
+    else:
+        sc = score(df, prenom, sexe, depuis)
 
     def check_is_list(ll):
         if not isinstance(ll, list):
