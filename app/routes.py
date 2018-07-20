@@ -37,7 +37,7 @@ def index():
         assert len(p) > 0
         
         p = p.to_json(orient='table')
-        
+
     except Exception as inst:
         error = inst
 		
@@ -53,7 +53,7 @@ def index():
         )
 
         response = app.response_class(
-            response=msg,
+            response=json.dumps({"error": msg}),
             status=500,
             mimetype='application/json'
         )
