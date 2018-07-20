@@ -48,7 +48,7 @@ def index():
             mimetype='application/json'
         )
     else:
-        msg = "{p} ? Je ne l'avais jamais vu auparavant...".format(
+        msg = "{p} ? Désolé, je n'ai jamais vu ce prénom auparavant...".format(
             p=prenom.capitalize()
         )
 

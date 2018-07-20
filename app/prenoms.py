@@ -11,11 +11,11 @@ def read_prenom_file(src_path):
     '''
     Reading file
     '''
-    df = pd.read_csv(src_path, sep='\t', encoding='UTF8',
+    df = pd.read_csv(src_path, sep='\t', encoding='iso-8859-1',
                      dtype={'sexe': str})
 
     '''
-    Movling particular lines out
+    Moving particular lines out
     '''
     c = df['annais'].str.contains('X')
     c |= df['dpt'].str.contains('X')
@@ -29,7 +29,7 @@ def read_prenom_file(src_path):
     dft = df.groupby(['preusuel', 'sexe'])['nombre'].sum().reset_index()
 
     dft.loc[:, 'idx'] = dft['preusuel'] + dft['sexe']
-    rares = dft.loc[dft['nombre'] < 20]['idx']
+    rares = dft.loc[dft['nombre'] < 3]['idx']
 
     df.loc[:, 'idx'] = df['preusuel'] + df['sexe']
     df = df.loc[~df['idx'].isin(rares)]
