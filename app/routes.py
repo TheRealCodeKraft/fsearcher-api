@@ -33,8 +33,11 @@ def index():
     error = None
     try:
         p = prenoms.score_filter(prenom, d, sexe=sexe,
-                                 depuis=depuis, exclude=excludes) \
-                   .to_json(orient='table')
+                                 depuis=depuis, exclude=excludes)
+        assert len(p) > 0
+        
+        p = p.to_json(orient='table')
+        
     except Exception as inst:
         error = inst
 		
@@ -45,8 +48,12 @@ def index():
             mimetype='application/json'
         )
     else:
+        msg = "{p} ? Je ne l'avais jamais vu auparavant...".format(
+            p=prenom.capitalize()
+        )
+
         response = app.response_class(
-            response=json.dumps(json.loads('{"error": "' + repr(error) + '"}')),
+            response=msg,
             status=500,
             mimetype='application/json'
         )
