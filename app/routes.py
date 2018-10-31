@@ -20,7 +20,7 @@ else:
 @app.route('/index')
 def index():
     
-    prenom = request.args.get('firstname')
+    prenom = request.args.get('firstname').strip()
     depuis = 1900
     sexe = request.args.get('sex')
     tt = request.args.get('excludes')
